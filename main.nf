@@ -6,6 +6,7 @@ include { snippy_core } from './modules/snippy_core.nf'
 include { snp_sites }   from './modules/snp_sites.nf'
 include { snp_dists }   from './modules/snp_dists.nf'
 include { gubbins }     from './modules/gubbins.nf'
+include { roary }       from './modules/roary.nf'
 include { iqtree }      from './modules/iqtree.nf'
 include { shiptv }      from './modules/shiptv.nf'
 
@@ -26,7 +27,7 @@ workflow {
     ch_mask = Channel.fromPath(params.mask)
   }
 
-  
+  ch_roary_input = Channel.fromPath(params.roary_input)
 
   main:
 
@@ -42,6 +43,10 @@ workflow {
     }
   } else {
     ch_alignment = snippy_core.out.clean_full_alignment
+  }
+
+  if (params.roary_input != 'NO_FILE'){
+    roary(ch_roary_input)
   }
   
   snp_sites(ch_alignment)
